@@ -1,46 +1,63 @@
 version: '3.8'
 
 services:
-  postgres:
+  ledger-postgres:
     image: postgres:15-alpine
     container_name: ledger-postgres
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ledger_reconciliation_db
-      POSTGRES_USER: tqi_fintech_user
-      POSTGRES_PASSWORD: secure_ledger_password_123
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - POSTGRES_DB=ledger_db
+      - POSTGRES_USER=ledger_user
+      - POSTGRES_PASSWORD=ledger_pass
 
-  localstack:
+  ledger-localstack:
     image: localstack/localstack:3.0.2
     container_name: ledger-localstack
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=sqs,sns
-      - AWS_DEFAULT_REGION=sa-east-1
+      - SERVICES=sqs
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
+  ledger-zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
     container_name: ledger-zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
+  ledger-kafka:
+    image: confluentinc/cp-kafka:7.5.0
     container_name: ledger-kafka
-    depends_on:
-      - zookeeper
     ports:
       - "9092:9092"
+    depends_on:
+      - ledger-zookeeper
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: ledger_zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ZOOKEEPER_CONNECT: 'ledger-zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://ledger-kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
-volumes:
-  pgdata:
+  ledger-prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: ledger-prometheus
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  ledger-grafana:
+    image: grafana/grafana:10.2.0
+    container_name: ledger-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - ledger-prometheus

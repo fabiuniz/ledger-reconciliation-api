@@ -3,3 +3,8 @@ target/
 *.csv
 *.log
 .DS_Store
+
+# Segurança e Local Infra
+.env
+docker/
+patch-pom.xml
