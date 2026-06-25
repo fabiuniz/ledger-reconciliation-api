@@ -2,7 +2,7 @@ package com.tqi.fintech.infrastructure;
 
 import com.tqi.fintech.application.output.ReconciliationRepository;
 import com.tqi.fintech.domain.ReconciliationBatch;
-import com.tqi.fintech.infrastructure.ReconciliationAnalysisService; // Import explícito da classe Kotlin
+import com.tqi.fintech.infrastructure.ReconciliationAnalysisService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import kotlinx.coroutines.BuildersKt;
 import kotlinx.coroutines.Dispatchers;
@@ -34,13 +34,14 @@ public class LedgerSqsListener {
         try {
             String transactionId = "TRX-" + System.currentTimeMillis();
             BigDecimal amount = new BigDecimal("0.05");
+            String tipoLancamento = "CREDIT";
 
             System.out.println("[SQS CONSUMER] 🚀 Invocando Concorrência Estruturada do Kotlin...");
             
-            // Ponte Java -> Kotlin Coroutines
+            // Ponte Java -> Kotlin Coroutines passando o terceiro parâmetro ajustado
             Map<String, String> analiseComplexa = BuildersKt.runBlocking(
                 Dispatchers.getIO(),
-                (scope, continuation) -> kotlinAnalysisService.executarAuditoriaComplexaEmParalelo(transactionId, amount, continuation)
+                (scope, continuation) -> kotlinAnalysisService.executarAuditoriaComplexaEmParalelo(transactionId, amount, tipoLancamento, continuation)
             );
 
             System.out.println("[SQS CONSUMER] 🧠 Resultado da análise preditiva: " + analiseComplexa);
@@ -48,7 +49,7 @@ public class LedgerSqsListener {
             System.out.println("[SQS CONSUMER] 🤖 Invocando auditoria com IA...");
             String resultadoIa = BuildersKt.runBlocking(
                 Dispatchers.getIO(),
-                (scope, continuation) -> kotlinAnalysisService.analisarDivergenciaFisica(transactionId, amount, "CREDIT", continuation)
+                (scope, continuation) -> kotlinAnalysisService.analisarDivergenciaFisica(transactionId, amount, tipoLancamento, continuation)
             );
 
             ReconciliationBatch batchFinal = new ReconciliationBatch(
