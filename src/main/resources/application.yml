@@ -57,8 +57,8 @@ server:
 # Configuração da API do Gemini 2.5
 gemini:
   api:
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
-    key: ${GEMINI_API_KEY:mock-key-development}
+    url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+    key: ${GOOGLE_AI_KEY:}
 
 # ==========================================
 # FASE 6: OBSERVABILIDADE E METRICS (PROMETHEUS)
