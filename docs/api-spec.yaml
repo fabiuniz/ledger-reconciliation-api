@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: Ledger Reconciliation API - TQI FinTech Core
+  version: 1.0.0
+  description: API de alta performance para conciliação contábil, batimento de saldos e auditoria de lotes de liquidação via IA.
+paths:
+  /api/reconciliations:
+    post:
+      summary: Lança manualmente um registro de transação para conciliação futura
+      operationId: createReconciliationEntry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReconciliationInput'
+      responses:
+        '201':
+          description: Registro contábil inserido com sucesso para processamento
+  /api/reconciliations/upload:
+    post:
+      summary: Upload de arquivos de extrato ou logs de lote de liquidação (CNAB) para processamento assíncrono
+      operationId: uploadClearingFile
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Arquivo de lote recebido e encaminhado para a malha de mensageria SQS
+  /api/reconciliations/dashboard:
+    get:
+      summary: Retorna os consolidados de acurácia, divergências e volumes liquidados do livro razão
+      operationId: getLedgerDashboard
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerDashboardReport'
+
+components:
+  schemas:
+    ReconciliationInput:
+      type: object
+      required:
+        - transactionId
+        - amount
+        - operationType
+      properties:
+        transactionId:
+          type: string
+          example: "TX-99823-XYZ"
+        amount:
+          type: number
+          format: double
+          example: 154000.55
+        operationType:
+          type: string
+          enum: [CREDIT, DEBIT]
+    LedgerDashboardReport:
+      type: object
+      properties:
+        totalVolume:
+          type: number
+          example: 25000000.00
+        discrepancyCount:
+          type: integer
+          example: 3
+        accuracyRate:
+          type: number
+          example: 99.99
