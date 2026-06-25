@@ -4,9 +4,9 @@ spring:
 
   # 1. Configuração do Banco de Dados (Postgres 15-alpine)
   datasource:
-    url: jdbc:postgresql://localhost:5432/ledger_reconciliation_db
-    username: tqi_fintech_user
-    password: secure_ledger_password_123
+    url: jdbc:postgresql://localhost:5432/ledger_db?sslmode=disable
+    username: ledger_user
+    password: ledger_pass
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -59,3 +59,24 @@ gemini:
   api:
     url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
     key: ${GEMINI_API_KEY:mock-key-development}
+
+# ==========================================
+# FASE 6: OBSERVABILIDADE E METRICS (PROMETHEUS)
+# ==========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,prometheus,metrics,resilience4j"
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ledger-reconciliation-api
+    distribution:
+      percentiles-by-name:
+        http.server.requests: 0.50, 0.95, 0.99
+        resilience4j.circuitbreaker.calls: 0.50, 0.95, 0.99
