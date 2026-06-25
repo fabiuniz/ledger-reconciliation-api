@@ -1,0 +1,5 @@
+target/
+.idea/
+*.csv
+*.log
+.DS_Store
