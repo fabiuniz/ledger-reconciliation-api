@@ -30,6 +30,7 @@ public class ReconciliationAiEngine implements AiAuditorEngine {
     @CircuitBreaker(name = "geminiAiEngine", fallbackMethod = "fallbackAnalyse")
     public String auditDiscrepancy(String transactionId, BigDecimal amount, String type) {
         System.out.println("[AI-ENGINE] 🌐 [HTTP] Disparando requisicao real para o Gemini 2.5-Flash...");
+        DashboardLiveController.notificar(4, "Disparando requisição real com chave autenticada para o Gemini 2.5-Flash...", "info");
 
         if ("mock-key-development".equals(apiKey) || apiKey == null) {
             System.out.println("[AI-ENGINE] ⚠️ GEMINI_API_KEY nao configurada. Usando simulador local.");
@@ -65,6 +66,7 @@ public class ReconciliationAiEngine implements AiAuditorEngine {
     // Assinatura do Fallback deve ser idêntica à do método principal + a exceção capturada
     public String fallbackAnalyse(String transactionId, BigDecimal amount, String type, Throwable t) {
         System.err.println("[AI-ENGINE] 🚨 Circuit Breaker ATUOU! Motivo: " + t.getMessage());
+        DashboardLiveController.notificar(4, "🚨 Circuit Breaker ATUOU! Mudando para modo Fallback local (Cota Excedida).", "warn");
         return "{\"categoria_risco\": \"DESCONHECIDO\", \"parecer_auditoria\": \"IA indisponivel temporariamente.\", \"acao_recomendada\": \"REVISAO_MANUAL_HUMANA\"}";
     }
 

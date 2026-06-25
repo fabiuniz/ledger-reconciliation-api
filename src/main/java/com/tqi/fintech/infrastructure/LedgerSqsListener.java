@@ -30,6 +30,7 @@ public class LedgerSqsListener {
     @SqsListener("ledger-clearing-upload-queue")
     public void listen(String messagePayload) {
         System.out.println("\n[SQS CONSUMER] 📥 Novo lote capturado. Iniciando pipeline E2E...");
+        DashboardLiveController.notificar(2, "Novo lote capturado na fila ledger-clearing-upload-queue.", "info");
 
         try {
             String transactionId = "TRX-" + System.currentTimeMillis();
