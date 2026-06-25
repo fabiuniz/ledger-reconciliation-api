@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: ledger-reconciliation-api
+
+  # 1. Configuração do Banco de Dados (Postgres 15-alpine)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ledger_reconciliation_db
+    username: tqi_fintech_user
+    password: secure_ledger_password_123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  # 2. Configuração do Apache Kafka (Confluent 7.4.0)
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ledger-reconciliation-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# 3. Configuração do AWS SQS (LocalStack 3.0.2)
+spring.cloud.aws:
+  region:
+    static: sa-east-1
+  credentials:
+    access-key: test
+    secret-key: test
+  sqs:
+    endpoint: http://localhost:4566
+
+# 4. Configuração de Resiliência (Resilience4j Circuit Breaker)
+resilience4j:
+  circuitbreaker:
+    instances:
+      geminiAiEngine:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 3
+
+# 5. Ativando as Virtual Threads no Spring Boot 3.2+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200 # Threads clássicas limitadas (mas o Spring usará VT sob o capô onde configurado)
