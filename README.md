@@ -118,12 +118,19 @@ curl -X POST -F "file=@./extrato-teste.csv" http://localhost:8080/api/reconcilia
 ```
 ### 🧪 Jenkins
 ```bash
+# 1. Para e remove o atual
+docker stop jenkins-server && docker rm jenkins-server
+
+# 2. Sobe o novo com TODOS os poderes necessários
 docker run -d \
+  --name jenkins-server \
+  --user root \
   -p 8181:8080 \
   -p 50000:50000 \
   -v jenkins_home:/var/jenkins_home \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  --name jenkins-server \
+  -v /usr/bin/docker:/usr/bin/docker \
+  -v /usr/libexec/docker/cli-plugins/docker-compose:/usr/libexec/docker/cli-plugins/docker-compose \
   --restart unless-stopped \
   jenkins/jenkins:lts
 

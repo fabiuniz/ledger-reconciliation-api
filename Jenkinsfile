@@ -29,5 +29,18 @@ pipeline {
                 echo 'Sucesso absoluto! O arquivo da imagem Java 21 foi gerado em: target/jib-image.tar'
             }
         }
+
+        stage('3. Deploy Automático na Máquina Física') {
+            steps {
+                echo 'Carregando a imagem e reiniciando a aplicação automaticamente...'
+                sh '''
+                    # 1. Carrega a imagem no motor Docker comum
+                    docker load --input target/jib-image.tar
+                    
+                    # 2. Executa o compose apontando para o arquivo REAL da sua máquina física
+                    docker compose -f /home/userlnx/docker/script_docker/java-ia/docker-compose.yml up -d --no-deps ledger-reconciliation-api
+                '''
+            }
+        }
     }
 }
