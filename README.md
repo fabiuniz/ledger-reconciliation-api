@@ -9,6 +9,8 @@
 
 Esta prancheta guia o desenvolvimento passo a passo de um microsserviço de **Conciliação Bancária e Liquidação de Missão Crítica** IA-Native utilizando **Java 21 (Virtual Threads)**, **Kotlin (Coroutines)**, **Arquitetura Hexagonal**, **Mensageria Híbrida (Kafka/SQS)** e tolerância a falhas.
 
+![Screenshot do Projeto](./images/screenshot.png)
+
 ---
 
 ## 🚀 Fase 1: Setup do Ambiente e Infraestrutura
