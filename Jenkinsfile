@@ -6,12 +6,6 @@ pipeline {
         maven 'Maven3'
     }
 
-    environment {
-        // Forçando o caminho físico padrão do Jenkins para ferramentas instaladas
-        JAVA_HOME = '/var/jenkins_home/tools/hudson.model.JDK/Java21'
-        PATH      = "${env.JAVA_HOME}/bin:${env.PATH}"
-    }
-
     stages {
         stage('1. Compilar e Testar') {
             steps {
