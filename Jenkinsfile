@@ -6,10 +6,16 @@ pipeline {
         maven 'Maven3'
     }
 
+    environment {
+        // Isso força o Jenkins a mapear a pasta onde ele baixou o JDK 21
+        JAVA_HOME = "${tool 'Java21'}"
+        PATH      = "${tool 'Java21'}/bin:${env.PATH}"
+    }
+
     stages {
         stage('1. Compilar e Testar') {
             steps {
-                echo 'Executando testes unitários...'
+                echo 'Executando testes unitários com Java 21...'
                 sh 'mvn clean test'
             }
         }
