@@ -7,9 +7,9 @@ pipeline {
     }
 
     environment {
-        // Isso força o Jenkins a mapear a pasta onde ele baixou o JDK 21
-        JAVA_HOME = "${tool 'Java21'}"
-        PATH      = "${tool 'Java21'}/bin:${env.PATH}"
+        // Forçando o caminho físico padrão do Jenkins para ferramentas instaladas
+        JAVA_HOME = '/var/jenkins_home/tools/hudson.model.JDK/Java21'
+        PATH      = "${env.JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
