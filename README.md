@@ -118,7 +118,7 @@ set -a && source .env && set +a && mvn spring-boot:run
 curl -X POST -F "file=@./extrato-teste.csv" http://localhost:8080/api/reconciliations/upload
 
 ```
-### 🧪 Jenkins
+### 🧪 Subir Jenkins
 ```bash
 # 1. Para e remove o atual
 docker stop jenkins-server && docker rm jenkins-server
@@ -139,3 +139,17 @@ docker run -d \
 docker logs jenkins-server
 chmod 666 /var/run/docker.sock
 ```
+
+### ⚙️ Configuração do Job na Interface Web do Jenkins
+```bash
+  Definition: Pipeline script from SCM
+  SCM: Git
+  Repository URL: https://github.com/fabiuniz/ledger-reconciliation-api.git
+  Branch Specifier: */main
+  Script Path: Jenkinsfile
+  Lightweight checkout: [ ] Desmarcado
+```
+
+Build Triggers:
+[X] Poll SCM
+    Schedule: H/2 * * * *
