@@ -32,14 +32,24 @@ pipeline {
 
         stage('3. Deploy Automático na Máquina Física') {
             steps {
-                echo 'Carregando a imagem e reiniciando a aplicação automaticamente...'
+                echo 'Carregando a imagem e instanciando a aplicação automaticamente...'
                 sh '''
-                    # 1. Carrega a imagem no motor Docker comum
+                    # 1. Atualiza a imagem no motor local da máquina física
                     docker load --input target/jib-image.tar
                     
-                    # 2. Executa o compose apontando para o arquivo REAL da sua máquina física
-                    docker compose -f /home/userlnx/docker/script_docker/java-ia/docker-compose.yml up -d --no-deps ledger-reconciliation-api
+                    # 2. Remove o container antigo da API (se ele existir) para não dar conflito de nome
+                    docker rm -f ledger-reconciliation-api || true
+                    
+                    # 3. Sobe o novo container com as variáveis e portas mapeadas
+                    docker run -d \
+                      --name ledger-reconciliation-api \
+                      -p 8080:8080 \
+                      --network host \
+                      -e SPRING_PROFILES_ACTIVE=local \
+                      -e GOOGLE_AI_KEY=sua_chave_do_gemini_aqui \
+                      ledger-reconciliation-api:latest
                 '''
+                echo 'Sucesso! Aplicação rodando em http://localhost:8080'
             }
         }
     }
