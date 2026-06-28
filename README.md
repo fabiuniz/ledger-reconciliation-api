@@ -1,4 +1,14 @@
-# 📋 Prancheta de Trabalho: Ledger Reconciliation AI API (TQI FinTech Edition)
+<!--
+Label: 🚀 Ledger Reconciliation AI API: Sistema de Conciliação Bancária IA-Native
+Description: 🌍 Público - Projeto de microsserviço de missão crítica para conciliação contábil e liquidação financeira automatizada, integrando engenharia de alta performance e inteligência artificial preditiva.
+technical_requirement: Lógica de Programação, Estrutura de Dados, Sistemas Distribuídos, Mensageria Assíncrona, Resiliência de Software, Computação em Nuvem.
+skills: Engenharia de Software Avançada, Design de Arquitetura Hexagonal, Programação Concorrente e Reativa, Implementação de CI/CD, Observabilidade de Sistemas.
+professions: Engenheiro(a) de Software Back-End, Arquiteto(a) de Soluções, Engenheiro(a) de DevOps, Engenheiro(a) de Confiabilidade de Sites (SRE), Analista de Infraestrutura Cloud.
+Tags: Fund, Dev, DevOps
+path_hook: hookfigma.hook9, hookfigma.hook7, hookfigma.hook18
+-->
+
+# 📋 Overview do Projeto: Ledger Reconciliation AI API (TQI FinTech)
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk)](https://openjdk.org/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
@@ -7,7 +17,8 @@
 [![AWS SQS](https://img.shields.io/badge/AWS_SQS-LocalStack-FF9900?style=for-the-badge&logo=amazonaws)](https://aws.amazon.com/sqs/)
 [![Google Gemini](https://img.shields.io/badge/Gemini_2.5_Flash-Real_AI-blue?style=for-the-badge&logo=googlegemini)](https://ai.google.dev/)
 
-Esta prancheta guia o desenvolvimento passo a passo de um microsserviço de **Conciliação Bancária e Liquidação de Missão Crítica** IA-Native utilizando **Java 21 (Virtual Threads)**, **Kotlin (Coroutines)**, **Arquitetura Hexagonal**, **Mensageria Híbrida (Kafka/SQS)** e tolerância a falhas.
+O ecossistema está desenhado garantindo o desacoplamento total das regras de negócio do core contábil em relação aos provedores de infraestrutura (bancos de dados, filas e APIs externas).
+O desenvolvimento passo a passo de um microsserviço de **Conciliação Bancária e Liquidação de Missão Crítica** IA-Native utilizando **Java 21 (Virtual Threads)**, **Kotlin (Coroutines)**, **Arquitetura Hexagonal**, **Mensageria Híbrida (Kafka/SQS)** e tolerância a falhas.
 
 ![Screenshot do Projeto](./images/screenshot.png)
 
@@ -118,7 +129,8 @@ set -a && source .env && set +a && mvn spring-boot:run
 curl -X POST -F "file=@./extrato-teste.csv" http://localhost:8080/api/reconciliations/upload
 
 ```
-### 🧪 Subir Jenkins
+### 🛠️ Pipeline de Integração Contínua (CI/CD) Integrado Jenkins
+
 ```bash
 # 1. Para e remove o atual
 docker stop jenkins-server && docker rm jenkins-server
